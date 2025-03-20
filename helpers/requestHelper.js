@@ -1,10 +1,11 @@
-const returnError = (statusCode, message) => {
+const returnError = (statusCode, message, errorData = []) => {
   return {
     statusCode,
     response: {
       status: false,
       code: statusCode,
       message,
+      errors: errorData,
       meta: {
           mode: process.env.NODE_ENV === 'production' ? 'Production' : 'Sandbox',
           timestamp: new Date().toISOString(),

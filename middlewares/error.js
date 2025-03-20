@@ -1,16 +1,17 @@
 const httpStatus = require('http-status').default;
 const config = require('../config/config');
 const ApiError = require('../utils/ApiError');
-const { returnError, consoleError } = require('../helpers/requestHandler');
+const { returnError, consoleError } = require('../helpers/requestHelper');
 
 // Convert any thrown error into an ApiError if it's not already
 const errorConverter = (err, req, res, next) => {
     let error = err;
-    
     if (!(error instanceof ApiError)) {
-        const statusCode = err.statusCode && Number.isInteger(err.statusCode) ? err.statusCode : httpStatus.INTERNAL_SERVER_ERROR;
-        const message = err.message || 'Something went wrong';
-        error = new ApiError(statusCode, message, [], false, err.stack);
+        const statusCode = error.statusCode && Number.isInteger(error.statusCode) 
+            ? error.statusCode 
+            : httpStatus.INTERNAL_SERVER_ERROR;
+        const message = error.message || 'Something went wrong';
+        error = new ApiError(statusCode, message, err, false, error.stack);
     }
 
     next(error);
@@ -23,10 +24,18 @@ const errorNotFound = (req, res, next) => {
 
 // Centralized error handler
 const errorHandler = (err, req, res, next) => {
-    // Ensure the status code is a valid HTTP status
-    const statusCode = err.statusCode && Number.isInteger(err.statusCode) ? err.statusCode : httpStatus.INTERNAL_SERVER_ERROR;
+
+    //## Log error for debugging
+    consoleError(err); 
+
+    const statusCode = err.statusCode && Number.isInteger(err.statusCode) 
+        ? err.statusCode 
+        : httpStatus.INTERNAL_SERVER_ERROR;
+
     const message = err.message || 'Something went wrong';
-    const response = returnError(statusCode, message);
+    const errors = err.errors || []; // If validation errors exist, include them
+
+    const response = returnError(statusCode, message, errors);
     res.status(statusCode).json(response.response);
 };
 
