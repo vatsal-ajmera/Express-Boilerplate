@@ -1,10 +1,31 @@
-var express = require('express');
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
+const userRoute = require("./users");
+const docsRoute = require("./docs");
+const config = require('../config/config');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  console.log(object)
-  res.render('index', { title: 'Express' });
+const defaultRoutes = [
+  {
+    path: "/users",
+    route: userRoute,
+  },
+];
+
+const devRoutes = [
+  {
+    path: "/docs",
+    route: docsRoute,
+  },
+];
+
+defaultRoutes.forEach((route) => {
+  router.use(route.path, route.route);
 });
+
+if (config.env === "development") {
+  devRoutes.forEach((route) => {
+    router.use(route.path, route.route);
+  });
+}
 
 module.exports = router;
