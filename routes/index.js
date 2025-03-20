@@ -22,7 +22,7 @@ defaultRoutes.forEach((route) => {
   router.use(route.path, route.route);
 });
 
-if (config.env === "development") {
+if (config.env === "developmensat") {
   devRoutes.forEach((route) => {
     router.use(route.path, route.route);
   });
