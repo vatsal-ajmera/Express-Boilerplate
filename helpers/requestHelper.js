@@ -13,7 +13,7 @@ const returnError = (statusCode, message, errorData = []) => {
     },
   };
 };
-const returnSuccess = (statusCode, message, data = {}, collection = null) => {
+const returnSuccess = (statusCode, message, data = [], collection = null) => {
   return {
     response: {
       status: true,

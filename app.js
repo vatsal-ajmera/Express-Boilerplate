@@ -5,7 +5,13 @@ const logger = require('morgan');
 const routes = require('./routes');
 const docs = require('./routes/docsRoutes');
 const { errorConverter, errorNotFound, errorHandler } = require('./middlewares/error');
+const passport = require('passport');
+const { jwtStrategy } = require('./config/passport');
 const app = express();
+
+// jwt authentication
+passport.use('jwt', jwtStrategy);
+app.use(passport.initialize({}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

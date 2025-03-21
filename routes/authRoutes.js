@@ -2,12 +2,18 @@ const express = require('express');
 const validate = require('../middlewares/validate');
 const authValidation = require('../validations/authValidations');
 const authController = require('../controllers/authController');
-// const auth = require('../../middlewares/auth');
+const { verifyAuth } = require('../middlewares/authentication');
 
 const router = express.Router();
 
 router.post('/register', validate(authValidation.register), authController.register);
 router.post('/login', validate(authValidation.login), authController.login);
+router.post('/forgot-password', validate(authValidation.forgotPassword), authController.forgotPassword)
+router.post('/reset-password', validate(authValidation.resetPassword), authController.updatePassword)
+
+router.use(verifyAuth());
+router.post('/logout', validate(authValidation.logout), authController.logoutSession);
+router.get('/dashboard', authController.dashboard);
 
 module.exports = router;
 
