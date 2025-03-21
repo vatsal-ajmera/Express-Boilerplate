@@ -13,7 +13,6 @@ router.post('/reset-password', validate(authValidation.resetPassword), authContr
 
 router.use(verifyAuth());
 router.post('/logout', validate(authValidation.logout), authController.logoutSession);
-router.get('/dashboard', authController.dashboard);
 
 module.exports = router;
 
