@@ -1,12 +1,12 @@
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const logger = require('morgan');
 const routes = require('./routes');
 const docs = require('./routes/docsRoutes');
 const { errorConverter, errorNotFound, errorHandler } = require('./middlewares/error');
 const passport = require('passport');
 const { jwtStrategy } = require('./config/passport');
+const logger = require('./utils/logger')
 const app = express();
 
 // jwt authentication
@@ -17,7 +17,12 @@ app.use(passport.initialize({}));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(logger('dev'));
+// Middleware to log requests
+app.use((req, res, next) => {
+    logger.info(`${req.method} ${req.originalUrl} - ${req.ip}`);
+    next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

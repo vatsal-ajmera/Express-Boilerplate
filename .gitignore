@@ -12,3 +12,6 @@ yarn-error.log
 coverage
 yarn.lock
 .idea
+
+
+logs/*

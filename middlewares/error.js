@@ -2,6 +2,7 @@ const httpStatus = require('http-status').default;
 const config = require('../config/config');
 const ApiError = require('../utils/ApiError');
 const { returnError, consoleError } = require('../helpers/requestHelper');
+const logger = require('../utils/logger');
 
 // Convert any thrown error into an ApiError if it's not already
 const errorConverter = (err, req, res, next) => {
@@ -33,8 +34,9 @@ const errorHandler = (err, req, res, next) => {
         : httpStatus.INTERNAL_SERVER_ERROR;
 
     const message = err.message || 'Something went wrong';
-    const errors = err.errors || []; // If validation errors exist, include them
+    const errors = err.errors || [];
 
+    logger.error(`Error ${statusCode}: ${req.method} ${req.originalUrl} ${err}`);
     const response = returnError(statusCode, message, errors);
     res.status(statusCode).json(response.response);
 };
